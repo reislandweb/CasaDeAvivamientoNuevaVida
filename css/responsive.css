@@ -1,0 +1,33 @@
+@media (max-width: 768px) {
+  .nav ul {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    background: rgba(3, 5, 18, 0.98);
+    padding: 12px 20px 20px;
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  }
+
+  .nav ul.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+  }
+
+  .hero-overlay {
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Predicaciones - Casa de Avivamiento Nueva Vida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/predicaciones.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <span class="logo-mark">✦</span>
+      <div class="logo-text">
+        <span>Casa de Avivamiento</span>
+        <strong>Nueva Vida</strong>
+      </div>
+    </div>
+    <nav class="nav">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="ministerios.html">Ministerios</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="predicaciones.html" class="active">Predicaciones</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </header>
+
+  <main class="predicaciones-main">
+    <section class="section section-light">
+      <div class="section-inner">
+        <h1>Predicaciones</h1>
+        <p>Conéctate con lo que Dios está hablando a nuestra casa.</p>
+      </div>
+    </section>
+
+    <!-- CONTENEDOR LIVE -->
+    <section class="section section-dark">
+      <div class="section-inner">
+        <h2>En vivo</h2>
+        <div id="liveContainer" class="live-container">
+          <p>Cargando estado de la transmisión en vivo...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÚLTIMAS PREDICACIONES (estático o luego dinámico) -->
+    <section class="section section-light">
+      <div class="section-inner">
+        <h2>Últimas predicaciones</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Mensaje: Nueva Vida en Cristo</h3>
+            <p>Una palabra sobre la transformación que solo Jesús puede traer.</p>
+          </article>
+          <article class="card">
+            <h3>Mensaje: Fuego de Avivamiento</h3>
+            <p>Un llamado a encender el altar del corazón.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p>© <span id="year"></span> Casa de Avivamiento Nueva Vida.</p>
+    </div>
+  </footer>
+
+  <script src="js/menu.js"></script>
+  <script src="js/facebook-live.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

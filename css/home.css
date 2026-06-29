@@ -1,0 +1,140 @@
+    /* CONFIGURACIÓN DEL CONTENEDOR HERO */
+    .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Ocupa exactamente el alto de la pantalla */
+    overflow: hidden;
+    }
+
+    /* El lienzo 3D se queda fijo al fondo absoluto */
+    .hero-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    }
+
+    #heroCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    }
+
+    /* CAPA DE CONTENIDO: Aquí solucionamos el orden vertical */
+    @media (min-width: 769px) {
+           .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* Se posiciona por encima del canvas */
+    
+    /* Activamos Flexbox vertical */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra todo el bloque en medio de la pantalla */
+    align-items: center;     /* Centra todo horizontalmente */
+    text-align: center;
+    padding: 0 24px;
+    transform: translateY(-10rem);
+    gap: 0px;
+    pointer-events: auto;
+    }
+
+    /* Ajustes del Logo dentro del flujo del Hero */
+    .hero-logo-container {
+    margin-bottom: -200px; /* Espacio controlado antes del texto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-logo-img {
+    width: 60rem;
+    max-width: 90vw;
+    max-height: vh;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 45px var(--accent-glow));
+    }
+
+    /* Contenedor de botones alineado */
+    .hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
+    }
+}
+    @keyframes float {
+    0%, 100% { transform: translateY(5px); }
+    50% { transform: translateY(-20px); }
+    }
+
+    /*SECCION RESPONSIVA*/
+
+        @media (max-width: 768px) {
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centrado perfecto sin empujones duros */
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+        transform: translateY(-2rem); /* Elevación sutil para no chocar con el menú */
+        pointer-events: auto;
+    }
+
+    .hero-logo-container {
+        margin-bottom: 20px; /* ¡MÁRGEN POSITIVO! Forzamos separación real para que no se pisen */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-logo-img {
+        width: 100%;
+        max-width: 85vw; /* Se adapta al ancho real del teléfono */
+        max-height: 40vh; /* Limita el alto para dejar aire arriba y abajo */
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 30px var(--accent-glow));
+    }
+
+    .hero-buttons {
+        display: flex;
+        flex-direction: column; /* Botones en vertical para que quepan perfectos */
+        width: 100%;
+        max-width: 260px; /* Centrados y contenidos */
+        gap: 12px;
+        position: relative;
+        z-index: 20;
+        pointer-events: auto;
+    }
+
+    /* Ajuste de los botones individuales en el móvil */
+    .hero-buttons .btn-primary,
+    .hero-buttons .btn-secondary {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        font-size: 15px;
+        text-align: center;
+    }
+    }

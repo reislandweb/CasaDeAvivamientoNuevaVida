@@ -1,0 +1,46 @@
+/* =========================================================
+   AURORA BOREAL + PALOMAS
+   CSS RESPONSIVE
+   ========================================================= */
+
+/*
+  CONTENEDOR PRINCIPAL
+  Puedes cambiar el z-index si quieres ponerlo detrás
+  del contenido de tu web
+*/
+.aurora-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  /* CAMBIAR CAPA */
+  z-index: -1;
+
+  /*
+    IMPORTANTE:
+    none = no bloquea clicks
+  */
+  pointer-events: none;
+}
+
+/*
+  CANVAS
+*/
+#auroraCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* =========================================================
+   RESPONSIVE MÓVIL
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .aurora-container {
+    opacity: 0.9;
+  }
+}
