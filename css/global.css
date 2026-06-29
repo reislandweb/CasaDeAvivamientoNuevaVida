@@ -243,21 +243,17 @@ body {
 }
 
 .social-list {
+  display: flex;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0px;
 }
-
-.social-list li {
-  margin-bottom: 4px;
+.icoFacebook, .icoInstragram {
+  width: 4rem;
 }
-
-.social-list a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 13px;
+.icoInstragram:hover {
+  transform: translateY(12px);
 }
-
-.social-list a:hover {
-  color: #ffffff;
+.icoFacebook:hover {
+  transform: translateY(12px);
 }
