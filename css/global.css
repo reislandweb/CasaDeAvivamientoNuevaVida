@@ -248,12 +248,15 @@ body {
   padding: 0;
   margin: 0px;
 }
-.icoFacebook, .icoInstragram {
+.icoFacebook, .icoInstragram, .icoTiktok {
   width: 4rem;
 }
 .icoInstragram:hover {
   transform: translateY(12px);
 }
 .icoFacebook:hover {
+  transform: translateY(12px);
+}
+.icoTiktok:hover {
   transform: translateY(12px);
 }
