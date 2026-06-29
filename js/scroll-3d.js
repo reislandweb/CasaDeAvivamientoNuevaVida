@@ -1,148 +1,127 @@
-// --- MOTOR 3D: PALOMAS FLOTANTES Y ALEATORIAS ---
-const canvas = document.getElementById('heroCanvas');
+    // --- MOTOR 3D: SISTEMA DE PARTICULAS DE LUZ (AVIVAMIENTO GLOBAL) ---
+    import * as THREE from 'three';
 
-// Escena y Cámara
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 8;
+    let scene, camera, renderer;
+    let particleGeometry, particleSystem;
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
 
-// Renderizador ultra fluido y transparente
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const particleCount = 1500; // Cantidad de destellos en pantalla
 
-// Iluminación ambiental y puntual para dar volumen 3D
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-scene.add(ambientLight);
+    init();
+    animate();
 
-const pointLight = new THREE.PointLight(0xd32f2f, 2, 50); // Luz roja de fondo
-pointLight.position.set(0, 0, 2);
-scene.add(pointLight);
+    function init() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
 
-// Grupo para contener todas las palomas
-const birdsGroup = new THREE.Group();
-scene.add(birdsGroup);
+    scene = new THREE.Scene();
 
-// Geometría estilizada de una paloma en baja poligonización (Efecto premium abstracto)
-function createBirdGeometry() {
-    const geometry = new THREE.BufferGeometry();
-    
-    // Vértices que definen el cuerpo y las alas desplegadas
-    const vertices = new Float32Array([
-        0.0,  0.0,  0.3,   // 0: Cabeza
-        0.0,  0.0, -0.5,   // 1: Cola
-       -0.6,  0.2, -0.1,   // 2: Ala Izquierda Extremo
-        0.6,  0.2, -0.1,   // 3: Ala Derecha Extremo
-        0.0, -0.1,  0.0    /* 4: Pecho */
-    ]);
-    
-    // Caras (Triángulos)
-    const indices = [
-        0, 2, 4, // Ala izq frontal
-        2, 1, 4, // Ala izq trasera
-        0, 4, 3, // Ala der frontal
-        4, 1, 3  // Ala der trasera
-    ];
-    
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.setIndex(indices);
-    geometry.computeVertexNormals();
-    return geometry;
-}
+    // Cámara con campo de visión amplio para dar profundidad estelar
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 500);
+    camera.position.z = 50;
 
-// Material blanco puro, brillante y suave
-const birdMaterial = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    side: THREE.DoubleSide,
-    flatShading: true,
-    shininess: 80
-});
+    // Renderizador fluido con fondo transparente
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Crear múltiples palomas con datos de vuelo independientes
-const birdsData = [];
-const numBirds = 15; // Cantidad de palomas simultáneas
+    // --- CREACIÓN DEL SISTEMA DE DESTELLOS ---
+    particleGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = [];
 
-for (let i = 0; i < numBirds; i++) {
-    const birdMesh = new THREE.Mesh(createBirdGeometry(), birdMaterial);
-    
-    // Posición inicial aleatoria en el espacio tridimensional
-    birdMesh.position.set(
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 8,
-        (Math.random() - 0.5) * 5
-    );
-    
-    // Escala aleatoria para dar sensación de profundidad
-    const randomScale = 0.4 + Math.random() * 0.4;
-    birdMesh.scale.set(randomScale, randomScale, randomScale);
-    
-    birdsGroup.add(birdMesh);
-    
-    // Guardamos las físicas individuales de cada ave
-    birdsData.push({
-        mesh: birdMesh,
-        speedX: 0.02 + Math.random() * 0.03,
-        speedY: (Math.random() - 0.5) * 0.015,
-        speedZ: (Math.random() - 0.5) * 0.01,
-        wingSpeed: 8 + Math.random() * 6,
-        phase: Math.random() * 10
+    for (let i = 0; i < particleCount * 3; i += 3) {
+        // Distribuimos las partículas en un cubo gigante invisible
+        positions[i] = (Math.random() - 0.5) * 150;     // X (Ancho)
+        positions[i + 1] = (Math.random() - 0.5) * 150; // Y (Alto)
+        positions[i + 2] = (Math.random() - 0.5) * 100; // Z (Profundidad)
+
+        // Velocidad individual de subida y balanceo lateral
+        velocities.push({
+        y: Math.random() * 0.05 + 0.02, // Velocidad de ascenso vertical
+        x: (Math.random() - 0.5) * 0.02 // Balanceo horizontal
+        });
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeometry.userData = { velocities: velocities };
+
+    // --- DISEÑO DEL DESTELLO (Material Premium) ---
+    // Creamos un destello circular difuminado por código (sin usar imágenes externas)
+    const pCanvas = document.createElement('canvas');
+    pCanvas.width = 16;
+    pCanvas.height = 16;
+    const pCtx = pCanvas.getContext('2d');
+    const gradient = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');      // Centro blanco brillante
+    gradient.addColorStop(0.3, 'rgba(212, 175, 55, 0.6)');   // Halo dorado de Avivamiento
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');             // Difuminado a transparente
+    pCtx.fillStyle = gradient;
+    pCtx.fillRect(0, 0, 16, 16);
+
+    const texture = new THREE.CanvasTexture(pCanvas);
+
+    const particleMaterial = new THREE.PointsMaterial({
+        size: 0.8,
+        map: texture,
+        transparent: true,
+        opacity: 0.7,
+        blending: THREE.AdditiveBlending, // Hace que brille el doble si se cruzan entre sí
+        depthWrite: false
     });
-}
 
-// Interacción suave con el movimiento del ratón (Efecto Parallax)
-let mouseX = 0, mouseY = 0;
-document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth) - 0.5;
-    mouseY = (e.clientY / window.innerHeight) - 0.5;
-});
+    // Juntamos la geometría y el material en el sistema definitivo
+    particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particleSystem);
 
-// Bucle de animación (Render loop)
-const clock = new THREE.Clock();
+    // Eventos interactivos
+    window.addEventListener('resize', onWindowResize);
+    document.addEventListener('mousemove', onMouseMove);
+    }
 
-function animate() {
-    requestAnimationFrame(animate);
-    const elapsedTime = clock.getElapsedTime();
-    
-    birdsData.forEach((bird) => {
-        // Movimiento de traslación (Vuelo hacia la derecha)
-        bird.mesh.position.x += bird.speedX;
-        bird.mesh.position.y += bird.speedY;
-        bird.mesh.position.z += bird.speedZ;
-        
-        // Simulación del aleteo modificando la rotación de las alas en el tiempo
-        const positionAttribute = bird.mesh.geometry.attributes.position;
-        const wingFlap = Math.sin(elapsedTime * bird.wingSpeed + bird.phase) * 0.25;
-        
-        // Modificamos dinámicamente la altura Y de las puntas de las alas (Vértices indexados 2 y 3)
-        positionAttribute.setY(2, 0.2 + wingFlap);
-        positionAttribute.setY(3, 0.2 + wingFlap);
-        positionAttribute.needsUpdate = true;
-        
-        // Orientación del ave según su dirección de vuelo
-        bird.mesh.rotation.y = Math.PI / 2 + (bird.speedY * 2);
-        bird.mesh.rotation.z = wingFlap * 0.2;
+    function onMouseMove(event) {
+    mouseX = (event.clientX - window.innerWidth / 2) * 0.02;
+    mouseY = (event.clientY - window.innerHeight / 2) * 0.02;
+    }
 
-        // Si la paloma se sale de los límites de la pantalla, reaparece en el lado izquierdo
-        if (bird.mesh.position.x > 10) {
-            bird.mesh.position.x = -10;
-            bird.mesh.position.y = (Math.random() - 0.5) * 8;
-        }
-    });
-    
-    // Rotación e interacción de la cámara basada en el ratón del usuario
-    camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
-    camera.position.y += (-mouseY * 2 - camera.position.y) * 0.05;
-    camera.lookAt(scene.position);
-    
-    renderer.render(scene, camera);
-}
-
-// Controlar redimensionamiento de pantalla
-window.addEventListener('resize', () => {
+    function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-});
+    }
 
-// Iniciar animación
-animate();
+    function animate() {
+    requestAnimationFrame(animate);
+
+    const positions = particleGeometry.attributes.position.array;
+    const velocities = particleGeometry.userData.velocities;
+
+    // 1. ANIMACIÓN DE ASCENSO (Efecto chispas flotantes)
+    let velIndex = 0;
+    for (let i = 0; i < positions.length; i += 3) {
+        // Aplicamos su velocidad de subida base + un empujón extra según cuánto scroll hagas
+        const scrollPush = window.scrollY * 0.0002;
+        positions[i + 1] += velocities[velIndex].y + scrollPush; // Sube en Y
+        positions[i] += velocities[velIndex].x;                  // Oscila en X
+
+        // Si una partícula se sale por la parte de arriba, la devolvemos abajo del todo
+        if (positions[i + 1] > 75) {
+        positions[i + 1] = -75;
+        positions[i] = (Math.random() - 0.5) * 150;
+        }
+
+        velIndex++;
+    }
+    particleGeometry.attributes.position.needsUpdate = true;
+
+    // 2. INTERACCIÓN SUAVE CON EL RATÓN (Efecto viento o gravedad al mover el cursor)
+    targetX += (mouseX - targetX) * 0.05;
+    targetY += (mouseY - targetY) * 0.05;
+
+    // El sistema de partículas entero se balancea con elegancia siguiendo el mouse
+    particleSystem.rotation.y = targetX * 0.1;
+    particleSystem.rotation.x = targetY * 0.1;
+
+    renderer.render(scene, camera);
+    }

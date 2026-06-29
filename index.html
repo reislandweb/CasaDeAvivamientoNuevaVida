@@ -24,6 +24,7 @@
 </head>
 
 <body>
+  <canvas id="heroCanvas"></canvas>
   <!--
         HEADER -->
   <header class="header">
@@ -57,8 +58,6 @@
     <!-- HERO -->
     <section class="hero">
       <div class="hero-3d">
-        <!-- THREE JS CANVAS -->
-        <canvas id="heroCanvas"></canvas>
 
         <div class="hero-overlay">
           <div class="hero-logo-container">
@@ -315,18 +314,21 @@
 
   </footer>
 
-  <!-- =====================================================
-       AURORA JS
-       ===================================================== -->
-  <script src="js/aurora.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.152.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.152.0/examples/jsm/"
+      }
+    }
+  </script>
 
-  <!-- THREE JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-
-  <!-- TUS SCRIPTS -->
-  <script src="js/scroll-3d.js"></script>
+  <script type="module" src="js/scroll-3d.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/aurora.js"></script>
+</body>
 
+</body>
 </body>
 </html>
